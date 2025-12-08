@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "matches",
+  "info": {
+    "singularName": "match",
+    "pluralName": "matches",
+    "displayName": "Match"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "homeTeam": {
+      "type": "string"
+    },
+    "awayTeam": {
+      "type": "string"
+    },
+    "homeScore": {
+      "type": "integer"
+    },
+    "awayScore": {
+      "type": "integer"
+    },
+    "matchDate": {
+      "type": "datetime"
+    },
+    "season": {
+      "type": "string"
+    },
+    "event": {
+      "type": "string"
+    }
+  }
+}
