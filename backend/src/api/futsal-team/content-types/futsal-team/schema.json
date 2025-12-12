@@ -18,19 +18,31 @@
       "type": "integer",
       "default": 0
     },
-    "wins": {
+    "won": {
       "type": "integer",
       "default": 0
     },
-    "draws": {
+    "drawn": {
       "type": "integer",
       "default": 0
     },
-    "losses": {
+    "lost": {
       "type": "integer",
       "default": 0
     },
     "goalDifference": {
+      "type": "integer",
+      "default": 0
+    },
+    "played": {
+      "type": "integer",
+      "default": 0
+    },
+    "goalsFor": {
+      "type": "integer",
+      "default": 0
+    },
+    "goalsAgainst": {
       "type": "integer",
       "default": 0
     }

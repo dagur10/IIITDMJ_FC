@@ -467,6 +467,33 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAboutAbout extends Struct.CollectionTypeSchema {
+  collectionName: 'abouts';
+  info: {
+    displayName: 'about';
+    pluralName: 'abouts';
+    singularName: 'about';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::about.about'> &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    teamPhoto: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    title: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiAlbumAlbum extends Struct.CollectionTypeSchema {
   collectionName: 'albums';
   info: {
@@ -514,22 +541,25 @@ export interface ApiFutsalTeamFutsalTeam extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    draws: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    drawn: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     goalDifference: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    goalsAgainst: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    goalsFor: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::futsal-team.futsal-team'
     > &
       Schema.Attribute.Private;
-    losses: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    lost: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    played: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     points: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
     teamName: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    wins: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    won: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
   };
 }
 
@@ -1086,6 +1116,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::about.about': ApiAboutAbout;
       'api::album.album': ApiAlbumAlbum;
       'api::futsal-team.futsal-team': ApiFutsalTeamFutsalTeam;
       'api::match.match': ApiMatchMatch;
