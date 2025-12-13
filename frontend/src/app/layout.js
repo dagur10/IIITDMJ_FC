@@ -3,8 +3,10 @@ import './globals.css';
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className="bg-gray-50">
+    // Added suppressHydrationWarning to html tag
+    <html lang="en" suppressHydrationWarning={true}>
+      {/* Added suppressHydrationWarning to body tag as well, just in case */}
+      <body className="bg-gray-50" suppressHydrationWarning={true}>
         <Navbar />
         <main className="container mx-auto p-4 min-h-screen">
           {children}

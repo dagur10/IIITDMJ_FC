@@ -545,6 +545,7 @@ export interface ApiFutsalTeamFutsalTeam extends Struct.CollectionTypeSchema {
     goalDifference: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     goalsAgainst: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     goalsFor: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    group: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1075,7 +1076,7 @@ export interface PluginUsersPermissionsUser
     > &
       Schema.Attribute.Private;
     membershipStatus: Schema.Attribute.Enumeration<
-      ['None', 'Pending', 'Approved']
+      ['None', 'Pending', 'Approved', 'Rejected']
     > &
       Schema.Attribute.DefaultTo<'None'>;
     password: Schema.Attribute.Password &
@@ -1084,6 +1085,9 @@ export interface PluginUsersPermissionsUser
         minLength: 6;
       }>;
     playingPosition: Schema.Attribute.String;
+    profilePicture: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios'
+    >;
     provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     resetPasswordToken: Schema.Attribute.String & Schema.Attribute.Private;

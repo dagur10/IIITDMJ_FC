@@ -45,6 +45,9 @@
     "goalsAgainst": {
       "type": "integer",
       "default": 0
+    },
+    "group": {
+      "type": "string"
     }
   }
 }

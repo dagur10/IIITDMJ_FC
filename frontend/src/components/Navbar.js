@@ -44,7 +44,16 @@ export default function Navbar() {
           <Link href="/gallery" className="hover:text-yellow-400 transition">Gallery</Link>
           <Link href="/members" className="hover:text-yellow-400 transition">Members</Link>
           <Link href="/about" className="hover:text-yellow-400 transition">About</Link>
-          
+          {/* NEW: Admin Link - Conditional Rendering */}
+          {user && (user.clubRole === 'Coordinator' || user.clubRole === 'Co_Coordinator') && (
+            <Link 
+              href="/admin" 
+              className="text-red-500 hover:text-red-400 font-bold transition border border-red-500 px-3 py-1 rounded-full hover:bg-red-50"
+            >
+              Admin Panel
+            </Link>
+          )}
+
           {/* Auth Section */}
           {user ? (
             <div className="relative group">

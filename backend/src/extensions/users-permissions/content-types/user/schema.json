@@ -84,7 +84,8 @@
       "enum": [
         "None",
         "Pending",
-        "Approved"
+        "Approved",
+        "Rejected"
       ]
     },
     "clubRole": {
@@ -95,6 +96,16 @@
         "Member",
         "Coordinator",
         "Co_Coordinator"
+      ]
+    },
+    "profilePicture": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
       ]
     }
   }

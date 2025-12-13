@@ -33,15 +33,54 @@ export const fetchAPI = async (path, token = null) => {
 
 // Helper to update data (PUT)
 // CHANGED: Added 'token' parameter
+// Helper to update data (PUT)
 export const updateAPI = async (path, data, token = null) => {
   const authToken = token || Cookies.get('jwt');
   const headers = authToken ? { Authorization: `Bearer ${authToken}` } : {};
   
   try {
-    const response = await api.put(path, data, { headers });
+    // FIX: Wrapped 'data' in an object because Strapi requires { data: { ... } }
+    const response = await api.put(path, { data }, { headers });
     return response.data;
   } catch (error) {
     console.error("Update Error:", error);
+    throw error;
+  }
+};
+// ... existing imports and functions
+
+// NEW: Helper to upload image
+export const uploadImage = async (file, token = null) => {
+  const authToken = token || Cookies.get('jwt');
+  const headers = authToken ? { Authorization: `Bearer ${authToken}` } : {};
+  
+  const formData = new FormData();
+  formData.append('files', file);
+
+  try {
+    const response = await api.post('/api/upload', formData, {
+      headers: {
+        ...headers,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    // Strapi returns an array of uploaded files, we want the first one
+    return response.data[0];
+  } catch (error) {
+    console.error("Upload Error:", error);
+    throw error;
+  }
+};
+// Helper to create new entries (POST)
+export const createAPI = async (path, data, token = null) => {
+  const authToken = token || Cookies.get('jwt');
+  const headers = authToken ? { Authorization: `Bearer ${authToken}` } : {};
+  
+  try {
+    const response = await api.post(path, { data }, { headers });
+    return response.data;
+  } catch (error) {
+    console.error("Creation Error:", error);
     throw error;
   }
 };
