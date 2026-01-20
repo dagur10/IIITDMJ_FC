@@ -11,21 +11,20 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "title": {
+    "trophies": {
+      "type": "blocks"
+    },
+    "coordinators": {
+      "type": "blocks"
+    },
+    "socialHandle": {
       "type": "string"
     },
-    "description": {
-      "type": "text"
+    "websiteCredits": {
+      "type": "string"
     },
-    "teamPhoto": {
-      "type": "media",
-      "multiple": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
+    "title": {
+      "type": "string"
     }
   }
 }
