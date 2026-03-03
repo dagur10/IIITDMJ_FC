@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
 :root {
+  /* Match the light bg-white from the mockups */
   --background: #ffffff;
-  --foreground: #171717;
+  /* Deep Text / Heading color equivalent to gray-900 */
+  --foreground: #111827;
+  
+  /* Setting explicit Brand Colors (Optional, but good for custom components) */
+  --brand-primary: #16a34a; /* Tailwind green-600 */
+  --brand-primary-hover: #15803d; /* Tailwind green-700 */
+  --brand-light: #f0fdf4; /* Tailwind green-50 */
 }
 
 @theme inline {
@@ -12,15 +19,26 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  /* Added a slight anti-aliasing for cleaner text rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optional Custom Scrollbar to match the green theme nicely */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9; 
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1; 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8; 
 }

@@ -2,21 +2,22 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+    // Replaced solid background with the green-50 to white gradient
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-green-50 to-white font-sans">
       <main className="flex w-full max-w-5xl flex-col items-center gap-12 px-6 py-20 text-center md:py-32">
+        
         {/* Championship Title Section */}
         <div className="flex flex-col items-center gap-4">
-          
-          <h1 className="text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-6xl">
+          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-6xl mb-4">
             Current Inter IIIT Champions
           </h1>
-          <p className="max-w-2xl text-lg text-zinc-600 dark:text-zinc-400">
+          <p className="max-w-2xl text-xl text-gray-600">
             Dominating the field with passion, unity, and relentless drive. We don't just play the game; we define it.
           </p>
         </div>
 
         {/* Team Photo Section */}
-        <div className="relative w-full overflow-hidden rounded-2xl border border-zinc-200 shadow-2xl dark:border-zinc-800">
+        <div className="relative w-full overflow-hidden rounded-2xl border border-gray-200 shadow-xl">
           <Image
             src="/team-photo.jpg" // Make sure to add this image to your public folder
             alt="The Championship Team"
@@ -33,41 +34,54 @@ export default function Home() {
         </div>
 
         {/* Motivational Grid */}
-        <div className="grid w-full grid-cols-1 gap-8 sm:grid-cols-3">
-          <div className="flex flex-col items-center gap-2 rounded-xl bg-white p-6 shadow-sm ring-1 ring-zinc-200 dark:bg-zinc-900 dark:ring-zinc-800">
-            <div className="text-3xl">🔥</div>
-            <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">Relentless Effort</h3>
-            <p className="text-zinc-600 dark:text-zinc-400">
+        <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-3">
+          {/* Card 1 */}
+          <div className="flex flex-col items-center text-center gap-2 bg-white rounded-lg shadow hover:shadow-lg transition p-6 group border border-gray-100">
+            <div className="text-4xl mb-2">🔥</div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-green-600 transition">
+              Relentless Effort
+            </h3>
+            <p className="text-gray-600">
               Success isn't owned. It's leased, and rent is due every single day.
             </p>
           </div>
-          <div className="flex flex-col items-center gap-2 rounded-xl bg-white p-6 shadow-sm ring-1 ring-zinc-200 dark:bg-zinc-900 dark:ring-zinc-800">
-            <div className="text-3xl">🤝</div>
-            <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">Unbreakable Unity</h3>
-            <p className="text-zinc-600 dark:text-zinc-400">
+          
+          {/* Card 2 */}
+          <div className="flex flex-col items-center text-center gap-2 bg-white rounded-lg shadow hover:shadow-lg transition p-6 group border border-gray-100">
+            <div className="text-4xl mb-2">🤝</div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-green-600 transition">
+              Unbreakable Unity
+            </h3>
+            <p className="text-gray-600">
               We rise by lifting others. Together, we are an unstoppable force.
             </p>
           </div>
-          <div className="flex flex-col items-center gap-2 rounded-xl bg-white p-6 shadow-sm ring-1 ring-zinc-200 dark:bg-zinc-900 dark:ring-zinc-800">
-            <div className="text-3xl">🚀</div>
-            <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">Future Focused</h3>
-            <p className="text-zinc-600 dark:text-zinc-400">
+          
+          {/* Card 3 */}
+          <div className="flex flex-col items-center text-center gap-2 bg-white rounded-lg shadow hover:shadow-lg transition p-6 group border border-gray-100">
+            <div className="text-4xl mb-2">🚀</div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-green-600 transition">
+              Future Focused
+            </h3>
+            <p className="text-gray-600">
               The trophy is in our hands, but our eyes are already on the next victory.
             </p>
           </div>
         </div>
 
         {/* Call to Action */}
-        <div className="flex gap-4">
+        <div className="flex gap-4 mt-4">
+          {/* Primary Action mapped to the green button style */}
           <a
             href="/gallery"
-            className="rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-500"
+            className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition shadow"
           >
             View Gallery
           </a>
+          {/* Secondary Action mapped to the light green info-box style */}
           <a
             href="/members"
-            className="rounded-full border border-zinc-300 px-6 py-3 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            className="inline-block bg-green-50 border-2 border-green-200 text-green-900 hover:bg-green-100 font-semibold py-3 px-6 rounded-lg transition"
           >
             Meet the Club
           </a>

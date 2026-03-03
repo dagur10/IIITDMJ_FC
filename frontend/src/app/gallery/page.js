@@ -13,7 +13,8 @@ export default async function GalleryPage() {
 
   return (
     <div className="py-10 max-w-6xl mx-auto px-4">
-      <h1 className="text-4xl font-bold mb-8 text-center text-blue-900">Photo Gallery</h1>
+      {/* Changed heading color from text-blue-900 to text-gray-900 to match the clean theme headers */}
+      <h1 className="text-4xl font-bold mb-8 text-center text-gray-900">Photo Gallery</h1>
       
       {albums.length === 0 ? (
         <div className="text-center py-20 text-gray-500">No albums found.</div>

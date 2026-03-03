@@ -23,7 +23,8 @@ export default function ImageCard({ linkId, title, date, initialImageUrl }) {
         
       </div>
       <div className="p-6">
-        <h2 className="text-xl font-bold mb-2 group-hover:text-blue-600 transition">{title}</h2>
+        {/* Changed hover text color from blue-600 to green-600 */}
+        <h2 className="text-xl font-bold mb-2 group-hover:text-green-600 transition">{title}</h2>
         <p className="text-gray-500 text-sm">{date}</p>
       </div>
     </Link>

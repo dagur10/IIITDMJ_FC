@@ -27,9 +27,11 @@ export default async function AlbumPage({ params }) {
 
   return (
     <div className="py-10 max-w-6xl mx-auto px-4">
-      <Link href="/gallery" className="text-blue-600 hover:underline mb-4 inline-block">&larr; Back to Gallery</Link>
+      {/* Changed link text color from blue-600 to green-600 */}
+      <Link href="/gallery" className="text-green-600 hover:underline mb-4 inline-block">&larr; Back to Gallery</Link>
       
-      <h1 className="text-4xl font-bold mb-2 text-blue-900">{data.title}</h1>
+      {/* Changed heading text color from blue-900 to gray-900 */}
+      <h1 className="text-4xl font-bold mb-2 text-gray-900">{data.title}</h1>
       <p className="text-gray-500 mb-8 border-b pb-4">
         {data.eventDate ? new Date(data.eventDate).toDateString() : 'Date N/A'}
       </p>
