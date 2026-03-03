@@ -26,7 +26,7 @@ export default function Home() {
             className="h-auto w-full object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-center pb-8">
+          <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent flex items-end justify-center pb-8">
             <p className="text-xl font-medium text-white italic">
               "Talent wins games, but teamwork and intelligence win championships."
             </p>
@@ -44,7 +44,7 @@ export default function Home() {
             <p className="text-gray-600">
               Success isn't owned. It's leased, and rent is due every single day.
             </p>
-          </div>
+          </div> 
           
           {/* Card 2 */}
           <div className="flex flex-col items-center text-center gap-2 bg-white rounded-lg shadow hover:shadow-lg transition p-6 group border border-gray-100">

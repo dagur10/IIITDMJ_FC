@@ -34,7 +34,7 @@ export default function Navbar() {
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <Link href="/" className="text-2xl font-extrabold tracking-tighter text-gray-900">
-          INSTITUTE <span className="text-green-600">FC</span>
+          IIITDMJ <span className="text-green-600">FC</span>
         </Link>
 
         {/* Desktop Menu */}
