@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function Home() {
   return (
     // Replaced solid background with the green-50 to white gradient
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-green-50 to-white font-sans">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-linear-to-b from-green-50 to-white font-sans">
       <main className="flex w-full max-w-5xl flex-col items-center gap-12 px-6 py-20 text-center md:py-32">
         
         {/* Championship Title Section */}

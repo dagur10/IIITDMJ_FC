@@ -1,0 +1,53 @@
+{
+    "kind": "collectionType",
+    "collectionName": "futsal_teams",
+    "info": {
+        "singularName": "futsal-team",
+        "pluralName": "futsal-teams",
+        "displayName": "futsalTeam"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "teamName": {
+            "type": "string"
+        },
+        "points": {
+            "type": "integer",
+            "default": 0
+        },
+        "won": {
+            "type": "integer",
+            "default": 0
+        },
+        "drawn": {
+            "type": "integer",
+            "default": 0
+        },
+        "lost": {
+            "type": "integer",
+            "default": 0
+        },
+        "goalDifference": {
+            "type": "integer",
+            "default": 0
+        },
+        "played": {
+            "type": "integer",
+            "default": 0
+        },
+        "goalsFor": {
+            "type": "integer",
+            "default": 0
+        },
+        "goalsAgainst": {
+            "type": "integer",
+            "default": 0
+        },
+        "group": {
+            "type": "string"
+        }
+    }
+}

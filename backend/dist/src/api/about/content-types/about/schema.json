@@ -1,0 +1,30 @@
+{
+    "kind": "collectionType",
+    "collectionName": "abouts",
+    "info": {
+        "singularName": "about",
+        "pluralName": "abouts",
+        "displayName": "about"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "trophies": {
+            "type": "blocks"
+        },
+        "coordinators": {
+            "type": "blocks"
+        },
+        "socialHandle": {
+            "type": "string"
+        },
+        "websiteCredits": {
+            "type": "string"
+        },
+        "title": {
+            "type": "string"
+        }
+    }
+}
