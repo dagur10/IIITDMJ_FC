@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-
+export const dynamic = 'force-dynamic';
 // 1. Move your main logic into a separate component
 function GoogleAuthHandler() {
   const searchParams = useSearchParams();
