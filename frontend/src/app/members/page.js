@@ -1,5 +1,7 @@
+"use client";
+
+import { useEffect, useState } from 'react';
 import { fetchAPI, getStrapiMedia } from '../../lib/api';
-import { cookies } from 'next/headers';
 
 const rolePriority = {
   'Coordinator': 1,
@@ -7,31 +9,46 @@ const rolePriority = {
   'Member': 3
 };
 
-async function getMembers(token) {
-  if (!token) return [];
+export default function MembersPage() {
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  try {
-    // UPDATED: Added '&populate=profilePicture' to get the image data
-    const data = await fetchAPI('/api/users?filters[membershipStatus][$eq]=Approved&populate=profilePicture', token);
-    
-    if(data) {
-      return data.sort((a, b) => {
-        const roleA = rolePriority[a.clubRole] || 4;
-        const roleB = rolePriority[b.clubRole] || 4;
-        return roleA - roleB;
-      });
+  useEffect(() => {
+    async function fetchMembersData() {
+      // 1. Grab the token from Local Storage
+      const token = localStorage.getItem('jwt');
+      
+      if (!token) {
+        setIsLoggedIn(false);
+        setLoading(false);
+        return;
+      }
+
+      setIsLoggedIn(true);
+
+      try {
+        // 2. Fetch the data using your API utility
+        const data = await fetchAPI('/api/users?filters[membershipStatus][$eq]=Approved&populate=profilePicture', token);
+        
+        if (data) {
+          // 3. Sort the members based on role priority
+          const sortedMembers = data.sort((a, b) => {
+            const roleA = rolePriority[a.clubRole] || 4;
+            const roleB = rolePriority[b.clubRole] || 4;
+            return roleA - roleB;
+          });
+          setMembers(sortedMembers);
+        }
+      } catch (error) {
+        console.error("Failed to fetch members:", error.message);
+      } finally {
+        setLoading(false);
+      }
     }
-    return [];
-  } catch (error) {
-    console.error("Failed to fetch members:", error.message);
-    return [];
-  }
-}
 
-export default async function MembersPage() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('jwt')?.value;
-  const members = await getMembers(token);
+    fetchMembersData();
+  }, []);
 
   return (
     <div className="py-10">
@@ -42,10 +59,15 @@ export default async function MembersPage() {
         </p>
       </div>
       
-      {members.length === 0 ? (
+      {/* Loading State */}
+      {loading ? (
+        <div className="text-center py-20">
+          <p className="text-xl text-gray-500 font-medium animate-pulse">Loading members...</p>
+        </div>
+      ) : members.length === 0 ? (
         <div className="text-center py-20 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
           <p className="text-xl text-gray-500 font-medium">
-            {token ? "No active members found." : "Please login to view members."}
+            {isLoggedIn ? "No active members found." : "Please login to view members."}
           </p>
         </div>
       ) : (
@@ -66,7 +88,7 @@ export default async function MembersPage() {
                   {imageUrl ? (
                     <img 
                       src={imageUrl} 
-                      alt={member.fullName} 
+                      alt={member.fullName || member.username} 
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -87,7 +109,7 @@ export default async function MembersPage() {
                     member.clubRole === 'Co_Coordinator' ? 'bg-orange-100 text-orange-800' :
                     'bg-blue-100 text-blue-800'
                 }`}>
-                  {member.clubRole}
+                  {member.clubRole || 'Member'}
                 </span>
 
                 {/* Details */}
