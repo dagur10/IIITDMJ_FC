@@ -1,10 +1,11 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+// Removed: import Cookies from 'js-cookie'; 
 import axios from 'axios'; 
-import { uploadImage, getStrapiMedia } from '../../lib/api';
+import { fetchAPI, uploadImage, getStrapiMedia } from '../../lib/api';
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+const STRAPI_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -29,31 +30,22 @@ export default function ProfilePage() {
     profilePicture: null
   });
 
-  // 1. Fetch User Data (FIXED: Using Axios directly to avoid parser issues)
+  // 1. Fetch User Data
   useEffect(() => {
+    // CHANGED: Use localStorage instead of Cookies
     const token = localStorage.getItem('jwt');
     if (!token) { router.push('/'); return; }
 
     const getUserData = async () => {
       try {
-        const { data: userData } = await axios.get(`${STRAPI_URL}/api/users/me?populate=profilePicture`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        
-        console.log("Fetched User Data:", userData); // Check your browser console to verify!
-        
+        const userData = await fetchAPI('/api/users/me?populate=profilePicture', token);
         setUser(prev => ({ ...prev, ...userData }));
-        
         if (userData.profilePicture) {
             setPreviewUrl(getStrapiMedia(userData.profilePicture.url));
         }
-      } catch (error) { 
-        console.error("Failed to fetch user:", error); 
-      } finally { 
-        setLoading(false); 
-      }
+      } catch (error) { console.error("Failed to fetch user:", error); } 
+      finally { setLoading(false); }
     };
-    
     getUserData();
   }, [router]);
 
@@ -69,8 +61,11 @@ export default function ProfilePage() {
 
   // --- SPECIAL USER UPDATE HELPER ---
   const updateUser = async (userId, payload, token) => {
+    // Strapi Users API typically expects FLAT JSON
     const url = `${STRAPI_URL}/api/users/${userId}`;
     const headers = { Authorization: `Bearer ${token}` };
+    console.log(`Attempting Update to: ${url}`, payload); // Debug Log
+    
     const { data } = await axios.put(url, payload, { headers });
     return data;
   };
@@ -79,6 +74,7 @@ export default function ProfilePage() {
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
+    // CHANGED: Use localStorage instead of Cookies
     const token = localStorage.getItem('jwt');
 
     try {
@@ -86,6 +82,7 @@ export default function ProfilePage() {
 
       if (selectedFile) {
         const uploadedImage = await uploadImage(selectedFile, token);
+        // Handle array vs object response
         const imgObj = Array.isArray(uploadedImage) ? uploadedImage[0] : uploadedImage;
         imageId = imgObj.id; 
       }
@@ -98,13 +95,15 @@ export default function ProfilePage() {
         profilePicture: imageId 
       };
 
+      // Try ID first (Integer), fallback to documentId
       const targetId = user.id || user.documentId;
       const updatedUser = await updateUser(targetId, updateData, token);
 
+      // CHANGED: Save updated user back to localStorage under the 'user' key
       localStorage.setItem('user', JSON.stringify(updatedUser));
       alert("Profile updated successfully!");
     } catch (error) {
-      console.error("Update Error:", error);
+      console.error(error);
       alert("Failed to update profile.");
     } finally {
       setSaving(false);
@@ -113,16 +112,24 @@ export default function ProfilePage() {
 
   // 3. FIX: Membership Request Logic
   const handleMembershipRequest = async () => {
+    // CHANGED: Use localStorage instead of Cookies
     const token = localStorage.getItem('jwt');
+    // Strapi Users Permissions plugin usually uses Integer ID
     const targetId = user.id; 
 
     if (confirm("Request official Club Membership?")) {
       try {
+        // Step A: Send the Request
+        // We assume the field is named 'membershipStatus' in Strapi
         const response = await updateUser(targetId, { membershipStatus: 'Pending' }, token);
         
+        console.log("Server Response:", response); // Check Console!
+
+        // Step B: Verify if server actually updated it
         if (response.membershipStatus === 'Pending') {
             setUser(prev => ({ ...prev, membershipStatus: 'Pending' }));
             
+            // CHANGED: Update localStorage instead of Cookie
             const currentUserStr = localStorage.getItem('user');
             const currentUser = currentUserStr ? JSON.parse(currentUserStr) : {};
             localStorage.setItem('user', JSON.stringify({ ...currentUser, membershipStatus: 'Pending' }));
@@ -193,6 +200,7 @@ export default function ProfilePage() {
                         <img src={previewUrl} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-400">
+                           {/* SVG Placeholder */}
                            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         </div>
                     )}
