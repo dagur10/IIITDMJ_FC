@@ -10,7 +10,10 @@ export default function MatchesPage() {
   useEffect(() => {
     const loadMatches = async () => {
       try {
-        const res = await fetchAPI('/api/matches?sort=matchDate:desc');
+        // CHANGED: Grab the token from Local Storage and pass it to the API
+        const token = localStorage.getItem('jwt');
+        const res = await fetchAPI('/api/matches?sort=matchDate:desc', token);
+        
         setMatches(Array.isArray(res.data) ? res.data : []);
       } catch (error) {
         console.error("Failed to load matches", error);

@@ -1,12 +1,28 @@
-export const dynamic = 'force-dynamic'; 
+"use client";
+import { useState, useEffect } from 'react';
 import { fetchAPI } from '../../lib/api';
 
-export default async function FutsalPage() {
-  let teams = [];
-  try {
-    const response = await fetchAPI('/api/futsal-teams');
-    teams = Array.isArray(response?.data) ? response.data : (Array.isArray(response) ? response : []);
-  } catch (err) { console.error("Failed to fetch teams:", err); }
+export default function FutsalPage() {
+  const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadTeams = async () => {
+      try {
+        // Grab the token from Local Storage and pass it to Strapi
+        const token = localStorage.getItem('jwt');
+        const response = await fetchAPI('/api/futsal-teams', token);
+        
+        setTeams(Array.isArray(response?.data) ? response.data : (Array.isArray(response) ? response : []));
+      } catch (err) { 
+        console.error("Failed to fetch teams:", err); 
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadTeams();
+  }, []);
 
   const getTeamData = (item) => item?.attributes || item;
 
@@ -27,6 +43,9 @@ export default async function FutsalPage() {
 
   // 3. Sort Groups Alphabetically
   const sortedGroupKeys = Object.keys(groupedTeams).sort();
+
+  // Show a loading state while fetching the token and data
+  if (loading) return <div className="p-10 text-center font-bold text-gray-500">Loading Tournament Tables...</div>;
 
   return (
     <div className="max-w-5xl mx-auto py-10 px-4">
