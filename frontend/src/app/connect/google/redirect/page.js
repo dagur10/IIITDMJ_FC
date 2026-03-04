@@ -2,29 +2,28 @@
 
 import { Suspense, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-export const dynamic = 'force-dynamic';
-// 1. Move your main logic into a separate component
-function GoogleAuthHandler() {
+
+// 1. Isolate the search params logic in its own component
+function GoogleAuthLogic() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
-    // Your logic to grab the token from the URL and send it to Strapi goes here
     const accessToken = searchParams.get("access_token");
-    
     if (accessToken) {
-      // Handle login, save cookie, then redirect to dashboard
+      console.log("Token received:", accessToken);
+      // Your Strapi fetch logic will go here
     }
   }, [searchParams, router]);
 
-  return <div className="text-green-600 flex justify-center mt-10">Authenticating with Google...</div>;
+  return <div className="text-green-600 mt-10 text-center">Finalizing login...</div>;
 }
 
-// 2. Wrap that component in Suspense in your default export
+// 2. Wrap that component in Suspense so Vercel's build doesn't crash
 export default function RedirectPage() {
   return (
-    <Suspense fallback={<div className="text-center mt-10">Loading...</div>}>
-      <GoogleAuthHandler />
+    <Suspense fallback={<div className="mt-10 text-center">Loading...</div>}>
+      <GoogleAuthLogic />
     </Suspense>
   );
 }
