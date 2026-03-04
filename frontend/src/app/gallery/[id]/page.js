@@ -1,41 +1,49 @@
-export const dynamic = 'force-dynamic';
+"use client";
+import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import { fetchAPI, getStrapiMedia } from '../../../lib/api';
 
-export default async function AlbumPage({ params }) {
-  // FIX: Await params before using them (Next.js 15 requirement)
-  const { id } = await params;
+export default function AlbumPage({ params }) {
+  // Await params using React.use() for Next.js 15 compatibility
+  const { id } = use(params);
+  
+  const [album, setAlbum] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  let album = null;
-  try {
-    // Strapi v5 finds by documentId automatically
-    const response = await fetchAPI(`/api/albums/${id}?populate=galleryImages`);
-    album = response?.data || response;
-  } catch (error) {
-    console.error("Album Load Error:", error);
-  }
+  useEffect(() => {
+    const loadAlbumDetails = async () => {
+      try {
+        const token = localStorage.getItem('jwt');
+        const response = await fetchAPI(`/api/albums/${id}?populate=galleryImages`, token);
+        setAlbum(response?.data || response);
+      } catch (error) {
+        console.error("Album Load Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadAlbumDetails();
+  }, [id]);
 
+  if (loading) return <div className="text-center py-20 font-bold text-gray-500 animate-pulse">Loading Album...</div>;
   if (!album) return <div className="text-center py-20 font-bold text-gray-500">Album not found.</div>;
 
-  // Handle nested or flat structure
   const data = album.attributes || album;
   
-  // Handle Gallery Images Array
   const galleryArray = Array.isArray(data.galleryImages) 
     ? data.galleryImages 
     : (data.galleryImages?.data || []);
 
   return (
     <div className="py-10 max-w-6xl mx-auto px-4">
-      {/* Changed link text color from blue-600 to green-600 */}
       <Link href="/gallery" className="text-green-600 hover:underline mb-4 inline-block">&larr; Back to Gallery</Link>
       
-      {/* Changed heading text color from blue-900 to gray-900 */}
       <h1 className="text-4xl font-bold mb-2 text-gray-900">{data.title}</h1>
       <p className="text-gray-500 mb-8 border-b pb-4">
         {data.eventDate ? new Date(data.eventDate).toDateString() : 'Date N/A'}
       </p>
 
+      {/* Masonry-style columns logic maintained */}
       <div className="columns-1 md:columns-3 lg:columns-4 gap-4 space-y-4">
         {galleryArray.map((img, index) => {
           const imgAttr = img.attributes || img;
@@ -44,7 +52,7 @@ export default async function AlbumPage({ params }) {
 
           return (
             <div key={index} className="break-inside-avoid mb-4">
-              <img src={imgUrl} alt="Gallery" className="w-full rounded-lg shadow" />
+              <img src={imgUrl} alt="Gallery" className="w-full rounded-lg shadow hover:opacity-90 transition cursor-zoom-in" />
             </div>
           );
         })}

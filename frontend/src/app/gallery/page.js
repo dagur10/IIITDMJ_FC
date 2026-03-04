@@ -1,19 +1,33 @@
-export const dynamic = 'force-dynamic'; 
+"use client";
+import { useState, useEffect } from 'react';
 import { fetchAPI, getStrapiMedia } from '../../lib/api';
-import ImageCard from '../../components/ImageCard'; // Import the new component
+import ImageCard from '../../components/ImageCard'; 
 
-export default async function GalleryPage() {
-  let albums = [];
-  try {
-    const response = await fetchAPI('/api/albums?populate=*&sort=eventDate:desc');
-    albums = Array.isArray(response?.data) ? response.data : (Array.isArray(response) ? response : []);
-  } catch (error) {
-    console.error("Gallery Load Error:", error);
-  }
+export default function GalleryPage() {
+  const [albums, setAlbums] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadAlbums = async () => {
+      try {
+        // Grab token from Local Storage
+        const token = localStorage.getItem('jwt');
+        const response = await fetchAPI('/api/albums?populate=*&sort=eventDate:desc', token);
+        
+        setAlbums(Array.isArray(response?.data) ? response.data : (Array.isArray(response) ? response : []));
+      } catch (error) {
+        console.error("Gallery Load Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadAlbums();
+  }, []);
+
+  if (loading) return <div className="p-10 text-center font-bold text-gray-500 animate-pulse">Loading Photo Gallery...</div>;
 
   return (
     <div className="py-10 max-w-6xl mx-auto px-4">
-      {/* Changed heading color from text-blue-900 to text-gray-900 to match the clean theme headers */}
       <h1 className="text-4xl font-bold mb-8 text-center text-gray-900">Photo Gallery</h1>
       
       {albums.length === 0 ? (
@@ -21,11 +35,10 @@ export default async function GalleryPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {albums.map((album) => {
-            // FIX: Handle both v4 and v5 structure
             const data = album.attributes || album;
             const linkId = album.documentId || album.id;
 
-            // Robust Image Extraction
+            // Robust Image Extraction logic maintained
             let imageUrl = '/placeholder.jpg';
             if (data.coverImage) {
                 const imgObj = Array.isArray(data.coverImage) ? data.coverImage[0] : data.coverImage;
