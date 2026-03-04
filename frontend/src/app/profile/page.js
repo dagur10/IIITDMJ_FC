@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
+// Removed: import Cookies from 'js-cookie'; 
 import axios from 'axios'; 
 import { fetchAPI, uploadImage, getStrapiMedia } from '../../lib/api';
 
@@ -32,7 +32,8 @@ export default function ProfilePage() {
 
   // 1. Fetch User Data
   useEffect(() => {
-    const token = Cookies.get('jwt');
+    // CHANGED: Use localStorage instead of Cookies
+    const token = localStorage.getItem('jwt');
     if (!token) { router.push('/'); return; }
 
     const getUserData = async () => {
@@ -73,7 +74,8 @@ export default function ProfilePage() {
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
-    const token = Cookies.get('jwt');
+    // CHANGED: Use localStorage instead of Cookies
+    const token = localStorage.getItem('jwt');
 
     try {
       let imageId = user.profilePicture?.id;
@@ -97,7 +99,8 @@ export default function ProfilePage() {
       const targetId = user.id || user.documentId;
       const updatedUser = await updateUser(targetId, updateData, token);
 
-      Cookies.set('userData', JSON.stringify(updatedUser), { expires: 7 });
+      // CHANGED: Save updated user back to localStorage under the 'user' key
+      localStorage.setItem('user', JSON.stringify(updatedUser));
       alert("Profile updated successfully!");
     } catch (error) {
       console.error(error);
@@ -109,7 +112,8 @@ export default function ProfilePage() {
 
   // 3. FIX: Membership Request Logic
   const handleMembershipRequest = async () => {
-    const token = Cookies.get('jwt');
+    // CHANGED: Use localStorage instead of Cookies
+    const token = localStorage.getItem('jwt');
     // Strapi Users Permissions plugin usually uses Integer ID
     const targetId = user.id; 
 
@@ -125,9 +129,10 @@ export default function ProfilePage() {
         if (response.membershipStatus === 'Pending') {
             setUser(prev => ({ ...prev, membershipStatus: 'Pending' }));
             
-            // Update Cookie
-            const currentCookie = Cookies.get('userData') ? JSON.parse(Cookies.get('userData')) : {};
-            Cookies.set('userData', JSON.stringify({ ...currentCookie, membershipStatus: 'Pending' }), { expires: 7 });
+            // CHANGED: Update localStorage instead of Cookie
+            const currentUserStr = localStorage.getItem('user');
+            const currentUser = currentUserStr ? JSON.parse(currentUserStr) : {};
+            localStorage.setItem('user', JSON.stringify({ ...currentUser, membershipStatus: 'Pending' }));
             
             alert("Request sent successfully!");
         } else {
