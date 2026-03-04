@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from 'react';
-// Removed: import Cookies from 'js-cookie';
 import { fetchAPI, createAPI, updateAPI } from '../../../lib/api';
 
 export default function AdminMatchesPage() {
@@ -18,7 +17,9 @@ export default function AdminMatchesPage() {
 
   const loadMatches = async () => {
     try {
-      const res = await fetchAPI('/api/matches?sort=matchDate:desc');
+      // CHANGED: Added token to the fetch request
+      const token = localStorage.getItem('jwt');
+      const res = await fetchAPI('/api/matches?sort=matchDate:desc', token);
       const data = Array.isArray(res.data) ? res.data : (Array.isArray(res) ? res : []);
       setMatchesList(data);
     } catch (error) { console.error("Matches Load Error", error); }
@@ -45,12 +46,8 @@ export default function AdminMatchesPage() {
 
   const handleMatchSubmit = async (e) => {
     e.preventDefault();
-    
-    // CHANGED: Pull the token from Local Storage instead of Cookies
     const token = localStorage.getItem('jwt');
-    
     const payload = { ...matchData, homeScore: parseInt(matchData.homeScore), awayScore: parseInt(matchData.awayScore) };
-    
     try {
       if (editingMatchId) {
         await updateAPI(`/api/matches/${editingMatchId}`, payload, token);

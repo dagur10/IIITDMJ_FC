@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from 'react';
-// Removed: import Cookies from 'js-cookie';
 import { fetchAPI, createAPI, uploadImage } from '../../../lib/api';
 
 export default function AdminGalleryPage() {
@@ -12,7 +11,9 @@ export default function AdminGalleryPage() {
 
   const loadAlbums = async () => {
     try {
-      const res = await fetchAPI('/api/albums?sort=eventDate:desc');
+      // CHANGED: Added token to the fetch request
+      const token = localStorage.getItem('jwt');
+      const res = await fetchAPI('/api/albums?sort=eventDate:desc', token);
       const data = Array.isArray(res.data) ? res.data : (Array.isArray(res) ? res : []);
       setAlbumsList(data);
     } catch (error) { console.error("Albums Load Error", error); }
@@ -26,10 +27,7 @@ export default function AdminGalleryPage() {
     e.preventDefault();
     if(!coverFile) { alert("Please select a cover image."); return; }
     setUploading(true);
-    
-    // CHANGED: Pull the token from Local Storage instead of Cookies
     const token = localStorage.getItem('jwt');
-    
     try {
       const coverImgResponse = await uploadImage(coverFile, token);
       const coverId = Array.isArray(coverImgResponse) ? coverImgResponse[0].id : coverImgResponse.id;
@@ -46,20 +44,15 @@ export default function AdminGalleryPage() {
         title: albumData.title, eventDate: albumData.eventDate,
         coverImage: coverId, galleryImages: galleryIds   
       };
-      
       await createAPI('/api/albums', payload, token);
       alert("Album Created Successfully!");
-      
       setAlbumData({ title: '', eventDate: '' });
-      setCoverFile(null); 
-      setGalleryFiles([]);
+      setCoverFile(null); setGalleryFiles([]);
       loadAlbums();
     } catch (error) { 
         console.error(error);
         alert("Gallery upload failed."); 
-    } finally { 
-        setUploading(false); 
-    }
+    } finally { setUploading(false); }
   };
 
   return (
