@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import Cookies from 'js-cookie';
+// Removed: import Cookies from 'js-cookie';
 import { fetchAPI } from '../../lib/api';
 
 export default function AdminLayout({ children }) {
@@ -13,29 +13,42 @@ export default function AdminLayout({ children }) {
   // 1. Centralized Auth Check
   useEffect(() => {
     const checkAuth = async () => {
-      const token = Cookies.get('jwt');
-      if (!token) { router.push('/'); return; }
+      // CHANGED: Grab the token from localStorage instead of Cookies
+      const token = localStorage.getItem('jwt');
+      
+      if (!token) { 
+        router.push('/'); 
+        return; 
+      }
+      
       try {
+        // Securely verify the user's role with the backend
         const user = await fetchAPI('/api/users/me', token);
+        
         if (!['Coordinator', 'Co_Coordinator'].includes(user.clubRole)) {
-          alert("Access Denied");
+          alert("Access Denied: You do not have admin permissions.");
           router.push('/');
           return;
         }
+        
         setAuthorized(true);
-      } catch (err) { router.push('/'); }
+      } catch (err) { 
+        console.error("Admin access error:", err);
+        router.push('/'); 
+      }
     };
+    
     checkAuth();
   }, [router]);
 
-  if (!authorized) return <div className="text-center py-20 font-bold">Verifying Permissions...</div>;
+  if (!authorized) return <div className="text-center py-20 font-bold text-blue-900">Verifying Permissions...</div>;
 
-  // 2. Navigation Tabs Array (Add the Members tab here!)
+  // 2. Navigation Tabs Array
   const tabs = [
     { name: 'Matches', path: '/admin/matches' },
     { name: 'Futsal Teams', path: '/admin/futsal' },
     { name: 'Gallery Albums', path: '/admin/gallery' },
-    { name: 'Manage Members', path: '/admin/members' }, // <-- NEW
+    { name: 'Manage Members', path: '/admin/members' },
     { name: 'Edit About Page', path: '/admin/about' },
   ];
 
