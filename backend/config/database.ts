@@ -1,27 +1,32 @@
-import { parse } from 'pg-connection-string';
+const { parse } = require("pg-connection-string");
 
-interface Env {
-  (key: string, defaultValue?: string): string;
-}
+module.exports = ({ env }) => {
+  // If Strapi Cloud provides the URL, parse and use it
+  if (env("DATABASE_URL")) {
+    const config = parse(env("DATABASE_URL"));
+    return {
+      connection: {
+        client: "postgres",
+        connection: {
+          host: config.host,
+          port: config.port,
+          database: config.database,
+          user: config.user,
+          password: config.password,
+          ssl: { rejectUnauthorized: false },
+        },
+      },
+    };
+  }
 
-export default ({ env }: { env: Env }) => {
-  const client = env('DATABASE_CLIENT', 'postgres');
-  const dbConfig = parse(env('DATABASE_URL','postgres://127.0.0.1:5432/strapi'));
-
+  // Safe fallback for the build process
   return {
     connection: {
-      client,
+      client: "sqlite",
       connection: {
-        host: dbConfig.host as string,
-        port: dbConfig.port ? parseInt(dbConfig.port) : undefined,
-        database: dbConfig.database as string,
-        user: dbConfig.user as string,
-        password: dbConfig.password as string,
-        ssl: { rejectUnauthorized: false },
+        filename: env("DATABASE_FILENAME", ".tmp/data.db"),
       },
-      options: {
-        ssl: true,
-      },
+      useNullAsDefault: true,
     },
   };
 };
