@@ -6,7 +6,7 @@ interface Env {
 
 export default ({ env }: { env: Env }) => {
   const client = env('DATABASE_CLIENT', 'postgres');
-  const dbConfig = parse(env('DATABASE_URL'));
+  const dbConfig = parse(env('DATABASE_URL','postgres://127.0.0.1:5432/strapi'));
 
   return {
     connection: {
