@@ -3,33 +3,42 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
+export const dynamic = 'force-dynamic';
+
 function GoogleAuthLogic() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // 1. Grab the token Google put in the URL
-    const accessToken = searchParams.get("access_token");
-    if (!accessToken) return;
+    // 1. Grab the official Strapi JWT that Strapi put in the URL
+    const jwt = searchParams.get("access_token");
+    
+    if (!jwt) return;
 
-    // 2. Send it to Strapi for verification
-    const authenticateWithStrapi = async () => {
+    // 2. We have the token! Now fetch the user's profile details
+    const fetchUserProfile = async () => {
       try {
         const backendUrl = process.env.NEXT_PUBLIC_API_URL;
-        const response = await fetch(`${backendUrl}/api/auth/google/callback?access_token=${accessToken}`);
-        const data = await response.json();
+        
+        // Ask Strapi "Who am I?" using the new token
+        const response = await fetch(`${backendUrl}/api/users/me`, {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+        
+        const user = await response.json();
 
-        if (data.jwt) {
-          // 3. Success! Save the Strapi JWT and User Info securely
-          // Using localStorage for simplicity (you can upgrade to HTTP-only cookies later)
-          localStorage.setItem("jwt", data.jwt);
-          localStorage.setItem("user", JSON.stringify(data.user));
+        if (user && user.id) {
+          // 3. Success! Save the token and user info in the browser
+          localStorage.setItem("jwt", jwt);
+          localStorage.setItem("user", JSON.stringify(user));
 
-          // 4. Redirect the logged-in user to the club dashboard
-          router.push("/dashboard"); 
+          // 4. Redirect the logged-in user to the club homepage or dashboard
+          router.push("/"); // Change this to "/dashboard" if you have a dashboard page
         } else {
-          setError("Authentication failed. Please try again.");
+          setError("Failed to load user profile.");
         }
       } catch (err) {
         console.error("Login error:", err);
@@ -37,7 +46,7 @@ function GoogleAuthLogic() {
       }
     };
 
-    authenticateWithStrapi();
+    fetchUserProfile();
   }, [searchParams, router]);
 
   if (error) return <div className="text-red-500 text-center mt-10 font-bold">{error}</div>;
