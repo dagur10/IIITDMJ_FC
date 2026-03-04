@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import Cookies from 'js-cookie';
+// Removed: import Cookies from 'js-cookie';
 import { fetchAPI, createAPI, uploadImage } from '../../../lib/api';
 
 export default function AdminGalleryPage() {
@@ -26,7 +26,10 @@ export default function AdminGalleryPage() {
     e.preventDefault();
     if(!coverFile) { alert("Please select a cover image."); return; }
     setUploading(true);
-    const token = Cookies.get('jwt');
+    
+    // CHANGED: Pull the token from Local Storage instead of Cookies
+    const token = localStorage.getItem('jwt');
+    
     try {
       const coverImgResponse = await uploadImage(coverFile, token);
       const coverId = Array.isArray(coverImgResponse) ? coverImgResponse[0].id : coverImgResponse.id;
@@ -43,12 +46,20 @@ export default function AdminGalleryPage() {
         title: albumData.title, eventDate: albumData.eventDate,
         coverImage: coverId, galleryImages: galleryIds   
       };
+      
       await createAPI('/api/albums', payload, token);
       alert("Album Created Successfully!");
+      
       setAlbumData({ title: '', eventDate: '' });
-      setCoverFile(null); setGalleryFiles([]);
+      setCoverFile(null); 
+      setGalleryFiles([]);
       loadAlbums();
-    } catch (error) { alert("Gallery upload failed."); } finally { setUploading(false); }
+    } catch (error) { 
+        console.error(error);
+        alert("Gallery upload failed."); 
+    } finally { 
+        setUploading(false); 
+    }
   };
 
   return (

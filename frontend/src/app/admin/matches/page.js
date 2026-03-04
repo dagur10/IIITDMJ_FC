@@ -1,13 +1,13 @@
 "use client";
 import { useState, useEffect } from 'react';
-import Cookies from 'js-cookie';
+// Removed: import Cookies from 'js-cookie';
 import { fetchAPI, createAPI, updateAPI } from '../../../lib/api';
 
 export default function AdminMatchesPage() {
   const [matchesList, setMatchesList] = useState([]); 
   const [editingMatchId, setEditingMatchId] = useState(null); 
   const [matchData, setMatchData] = useState({
-    homeTeam: '', awayTeam: '', homeScore: 0, awayScore: 0,
+    homeTeam: 'IIITDMJ', awayTeam: '', homeScore: 0, awayScore: 0,
     matchDate: '', season: '2025', event: ''
   });
 
@@ -45,8 +45,12 @@ export default function AdminMatchesPage() {
 
   const handleMatchSubmit = async (e) => {
     e.preventDefault();
-    const token = Cookies.get('jwt');
+    
+    // CHANGED: Pull the token from Local Storage instead of Cookies
+    const token = localStorage.getItem('jwt');
+    
     const payload = { ...matchData, homeScore: parseInt(matchData.homeScore), awayScore: parseInt(matchData.awayScore) };
+    
     try {
       if (editingMatchId) {
         await updateAPI(`/api/matches/${editingMatchId}`, payload, token);
@@ -57,7 +61,10 @@ export default function AdminMatchesPage() {
       }
       handleCancelMatchEdit();
       loadMatches();
-    } catch (error) { alert("Match Operation failed."); }
+    } catch (error) { 
+        console.error(error);
+        alert("Match Operation failed."); 
+    }
   };
 
   return (

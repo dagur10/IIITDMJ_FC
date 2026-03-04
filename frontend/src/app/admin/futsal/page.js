@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import Cookies from 'js-cookie';
+// Removed: import Cookies from 'js-cookie';
 import { fetchAPI, createAPI, updateAPI } from '../../../lib/api';
 
 export default function AdminFutsalPage() {
@@ -42,7 +42,10 @@ export default function AdminFutsalPage() {
 
   const handleTeamSubmit = async (e) => {
     e.preventDefault();
-    const token = Cookies.get('jwt');
+    
+    // CHANGED: Pull the token from Local Storage instead of Cookies
+    const token = localStorage.getItem('jwt');
+    
     const payload = {
         teamName: futsalData.teamName, group: futsalData.group,
         played: parseInt(futsalData.played), won: parseInt(futsalData.won), 
@@ -50,6 +53,7 @@ export default function AdminFutsalPage() {
         goalsFor: parseInt(futsalData.goalsFor), goalsAgainst: parseInt(futsalData.goalsAgainst), 
         points: parseInt(futsalData.points)
     };
+    
     try {
       if (editingTeamId) {
         await updateAPI(`/api/futsal-teams/${editingTeamId}`, payload, token);
@@ -60,7 +64,10 @@ export default function AdminFutsalPage() {
       }
       handleCancelTeamEdit();
       loadFutsal();
-    } catch (error) { alert("Futsal Operation failed."); }
+    } catch (error) { 
+        console.error(error);
+        alert("Futsal Operation failed."); 
+    }
   };
 
   return (

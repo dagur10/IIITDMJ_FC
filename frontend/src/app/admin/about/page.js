@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import Cookies from 'js-cookie';
+// Removed: import Cookies from 'js-cookie';
 import { fetchAPI, createAPI, updateAPI } from '../../../lib/api';
 
 export default function AdminAboutPage() {
@@ -53,7 +53,10 @@ export default function AdminAboutPage() {
   const handleAboutSubmit = async (e) => {
     e.preventDefault();
     setUploading(true);
-    const token = Cookies.get('jwt');
+    
+    // CHANGED: Pull the token from Local Storage
+    const token = localStorage.getItem('jwt');
+    
     try {
         const payload = {
             title: aboutData.title,
@@ -62,6 +65,7 @@ export default function AdminAboutPage() {
             trophies: stringToBlocks(aboutData.trophies),
             coordinators: stringToBlocks(aboutData.coordinators)
         };
+        
         if (aboutId) {
             await updateAPI(`/api/abouts/${aboutId}`, payload, token);
             alert("About Page Updated!");

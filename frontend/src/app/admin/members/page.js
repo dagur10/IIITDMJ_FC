@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import Cookies from 'js-cookie';
+// Removed: import Cookies from 'js-cookie';
 import axios from 'axios';
 import { fetchAPI } from '../../../lib/api';
 
@@ -11,11 +11,12 @@ export default function AdminMembersPage() {
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState(null);
   
-  // NEW: State for filtering the table
+  // State for filtering the table
   const [statusFilter, setStatusFilter] = useState('All'); 
 
   const loadUsers = async () => {
-    const token = Cookies.get('jwt');
+    // CHANGED: Pull token from Local Storage
+    const token = localStorage.getItem('jwt');
     try {
       const res = await fetchAPI('/api/users', token);
       setUsers(Array.isArray(res) ? res : []);
@@ -32,7 +33,8 @@ export default function AdminMembersPage() {
 
   const updateUser = async (userId, payload) => {
     setUpdatingId(userId);
-    const token = Cookies.get('jwt');
+    // CHANGED: Pull token from Local Storage
+    const token = localStorage.getItem('jwt');
     try {
       await axios.put(`${API_URL}/api/users/${userId}`, payload, {
         headers: { Authorization: `Bearer ${token}` }
@@ -133,7 +135,7 @@ export default function AdminMembersPage() {
                     </div>
                   </td>
                   
-                  {/* NEW: Membership Status Dropdown */}
+                  {/* Membership Status Dropdown */}
                   <td className="py-3 px-4">
                     <select
                       value={user.membershipStatus || 'None'}
